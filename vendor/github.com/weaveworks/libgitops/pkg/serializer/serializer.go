@@ -49,7 +49,7 @@ func NewSerializer(scheme *runtime.Scheme, codecs *k8sserializer.CodecFactory) S
 	// Allow both YAML and JSON inputs (JSON is a subset of YAML), and deserialize in strict mode
 	strictSerializer := json.NewSerializerWithOptions(json.DefaultMetaFactory, scheme, scheme, json.SerializerOptions{
 		Yaml:   true,
-		Strict: true,
+		Strict: false,
 	})
 
 	return &serializer{

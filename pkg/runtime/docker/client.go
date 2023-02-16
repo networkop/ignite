@@ -226,7 +226,8 @@ func (dc *dockerClient) StopContainer(container string, timeout *time.Duration) 
 	}()
 	<-readyC // wait until removal detection has started
 
-	if err := dc.client.ContainerStop(context.Background(), container, timeout); err != nil {
+	t := int(*timeout)
+	if err := dc.client.ContainerStop(context.Background(), container, cont.StopOptions{Timeout: &t}); err != nil {
 		// If the container is not found, return nil, no-op.
 		if errdefs.IsNotFound(err) {
 			log.Warn(err)
