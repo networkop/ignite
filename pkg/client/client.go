@@ -40,7 +40,6 @@ VM with a new IP address:
 		}
 		fmt.Printf("VM my-vm cpus: %d\n", myVM.Spec.CPUs)
 	}
-
 */
 package client
 

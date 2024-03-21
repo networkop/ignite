@@ -15,6 +15,7 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	cont "github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/errdefs"
 	log "github.com/sirupsen/logrus"
@@ -75,7 +76,7 @@ func (dc *dockerClient) PullImage(image meta.OCIImageRef) (err error) {
 	}
 	if authCreds != nil {
 		// Encode the credentials and set it in the pull options.
-		authConfig := types.AuthConfig{}
+		authConfig := registry.AuthConfig{}
 		authConfig.Username, authConfig.Password, err = authCreds(refDomain)
 		if err != nil {
 			return err
@@ -215,7 +216,7 @@ func (dc *dockerClient) RunContainer(image meta.OCIImageRef, config *runtime.Con
 		return "", err
 	}
 
-	return c.ID, dc.client.ContainerStart(context.Background(), c.ID, types.ContainerStartOptions{})
+	return c.ID, dc.client.ContainerStart(context.Background(), c.ID, cont.StartOptions{})
 }
 
 func (dc *dockerClient) StopContainer(container string, timeout *time.Duration) error {
@@ -272,7 +273,7 @@ func (dc *dockerClient) RemoveContainer(container string) error {
 	}()
 
 	<-readyC // The ready channel is used to wait until removal detection has started
-	if err := dc.client.ContainerRemove(context.Background(), container, types.ContainerRemoveOptions{}); err != nil {
+	if err := dc.client.ContainerRemove(context.Background(), container, cont.RemoveOptions{}); err != nil {
 		// If the container is not found, return nil, no-op.
 		if errdefs.IsNotFound(err) {
 			log.Warn(err)
@@ -286,7 +287,7 @@ func (dc *dockerClient) RemoveContainer(container string) error {
 }
 
 func (dc *dockerClient) ContainerLogs(container string) (io.ReadCloser, error) {
-	return dc.client.ContainerLogs(context.Background(), container, types.ContainerLogsOptions{
+	return dc.client.ContainerLogs(context.Background(), container, cont.LogsOptions{
 		ShowStdout: true, // We only need stdout, as TTY mode merges stderr into it
 	})
 }
