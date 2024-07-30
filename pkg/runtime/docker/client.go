@@ -12,9 +12,9 @@ import (
 
 	refdocker "github.com/containerd/containerd/reference/docker"
 	"github.com/containerd/containerd/remotes/docker"
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	cont "github.com/docker/docker/api/types/container"
+	dockerImage "github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/errdefs"
@@ -55,7 +55,7 @@ func GetDockerClient() (*dockerClient, error) {
 func (dc *dockerClient) PullImage(image meta.OCIImageRef) (err error) {
 	var rc io.ReadCloser
 
-	opts := types.ImagePullOptions{}
+	opts := dockerImage.PullOptions{}
 
 	// Get the domain name from the image.
 	named, err := refdocker.ParseDockerRef(image.String())
